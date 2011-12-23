@@ -1,12 +1,10 @@
 package com.nicholasworkshop.ui.inifinitehorizontalscrollview;
 
-import android.R.integer;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
@@ -18,7 +16,11 @@ public class SnappableHorizontalScrollView extends HorizontalScrollView {
 	private static final String TAG = "InifiniteHorizontalScrollView";
 
 	private LinearLayout mContainer;
-
+	private String[] mDataSet;
+	
+	private int mFontSize = 30;
+	private Typeface mTypeface;
+	
 	public SnappableHorizontalScrollView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContainer = new LinearLayout(context);
@@ -27,16 +29,29 @@ public class SnappableHorizontalScrollView extends HorizontalScrollView {
 		this.setVerticalScrollBarEnabled(false);
 		this.setScrollbarFadingEnabled(false);
 		this.addView(mContainer);
+		this.setOnTouchListener(mOnTouchListener);
+	}
 
-		for (int i = 0; i < 10; i++) {
-			TextView textView = new TextView(context);
-			textView.setText("Bonjour" + i);
+	public void setTypeface(Typeface typeface) {
+		mTypeface = typeface;
+	}
+
+	public void setFontSize(int fontsize) {
+		mFontSize = fontsize;
+	}
+	
+	public void setDataSet(String[] dataset) {
+		mDataSet = dataset;
+		mContainer.removeAllViews();
+		for (int i = 0; i < mDataSet.length; i++) {
+			TextView textView = new TextView(getContext());
+			textView.setText(mDataSet[i]);
 			textView.setPadding(10, 10, 10, 10);
 			textView.setTextColor(Color.WHITE);
-			textView.setTextSize(30);
+			textView.setTextSize(mFontSize);
+			textView.setTypeface(mTypeface);
 			mContainer.addView(textView);
 		}
-		setOnTouchListener(mOnTouchListener);
 	}
 
 	private OnTouchListener mOnTouchListener = new View.OnTouchListener() {
