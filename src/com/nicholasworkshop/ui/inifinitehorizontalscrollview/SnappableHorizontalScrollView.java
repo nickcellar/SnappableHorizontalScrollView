@@ -19,7 +19,7 @@ public class SnappableHorizontalScrollView extends HorizontalScrollView {
 
 	private LinearLayout mContainer;
 	private String[] mDataSet;
-
+	private SnappableHorizontalScrollListener mListener;
 	private int mFontSize = 30;
 	private Typeface mTypeface;
 	private int mActiveColor = Color.WHITE;
@@ -67,6 +67,7 @@ public class SnappableHorizontalScrollView extends HorizontalScrollView {
 			itemPosition += mContainer.getChildAt(i).getWidth();
 		}
 		smoothScrollTo(itemPosition, getScrollY());
+		updateTextColor(position);
 	}
 
 	public void setDataSet(String[] dataset) {
@@ -86,6 +87,10 @@ public class SnappableHorizontalScrollView extends HorizontalScrollView {
 		updateTextColor(0);
 	}
 
+	public void setListener(SnappableHorizontalScrollListener listener) {
+		mListener = listener;
+	}
+
 	private OnTouchListener mOnTouchListener = new View.OnTouchListener() {
 		@Override public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -99,11 +104,13 @@ public class SnappableHorizontalScrollView extends HorizontalScrollView {
 							Log.d(TAG, "Snap to last " + lastItemPosition);
 							smoothScrollTo(lastItemPosition, getScrollY());
 							updateTextColor(i);
+							if (mListener != null) mListener.onSelectionChanged(i);
 						}
 						else {
 							Log.d(TAG, "Snap to next " + nextItemPosition);
 							smoothScrollTo(nextItemPosition, getScrollY());
 							updateTextColor(i + 1);
+							if (mListener != null) mListener.onSelectionChanged(i + 1);
 						}
 						break;
 					}
@@ -115,4 +122,6 @@ public class SnappableHorizontalScrollView extends HorizontalScrollView {
 			}
 		}
 	};
+
+	
 }
